@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Terminal Command Center</title>
+  <style>
+    :root {
+      --bg-1: #f6f3ee;
+      --bg-2: #d8e5ea;
+      --ink: #132126;
+      --muted: #3f555d;
+      --card: rgba(255, 255, 255, 0.8);
+      --line: rgba(19, 33, 38, 0.15);
+      --accent: #0e7c66;
+      --accent-2: #d95f2a;
+      --ok: #156f31;
+      --shadow: 0 14px 30px rgba(20, 36, 45, 0.12);
+      --mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(900px 500px at -10% -10%, #f7c2a722, transparent 70%),
+        radial-gradient(800px 450px at 110% 20%, #63bdbd22, transparent 60%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1200px, 92vw);
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(130deg, #ffffffcc, #f9f5f0cc);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 20px;
+      animation: rise 500ms ease;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffcd8a88, #ffcd8a00 70%);
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 72ch;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.98rem;
+    }
+
+    .toolbar {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-row input,
+    .search-row select {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      background: #fffffff2;
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .search-row input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+      font-family: inherit;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding-top: 2px;
+    }
+
+    .quick {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .quick button {
+      text-align: left;
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+      padding: 12px;
+    }
+
+    .quick strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .quick code {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+
+    .section-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: rise 500ms ease;
+    }
+
+    .section-head {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffffcf, #fdf8f3cf);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0.2px;
+    }
+
+    .section-head small {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .rows {
+      display: grid;
+      gap: 0;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      border-bottom: 1px dashed var(--line);
+      padding: 14px 16px;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.93rem;
+    }
+
+    .row p {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.87rem;
+      line-height: 1.45;
+    }
+
+    code {
+      font-family: var(--mono);
+      background: #1321260c;
+      border: 1px solid #1321261c;
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-size: 0.84rem;
+      word-break: break-word;
+    }
+
+    .action-col {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .copy {
+      background: var(--accent-2);
+      color: #fff;
+      min-width: 78px;
+    }
+
+    .copied {
+      background: var(--ok) !important;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: var(--muted);
+      text-align: center;
+      background: #ffffff88;
+    }
+
+    .foot {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .action-col {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>GitHub Terminal Command Center</h1>
+      <p class="subtitle">
+        Page pratique pour apprendre et reutiliser les principales commandes Git et GitHub en terminal.
+        Utilise la recherche, filtre par categorie, puis copie chaque commande en un clic.
+      </p>
+
+      <div class="toolbar">
+        <div class="search-row">
+          <input id="search" type="search" placeholder="Rechercher: commit, branch, stash, rebase, tag, gh..." />
+          <select id="category"></select>
+          <button class="btn-primary" id="copyAllVisible">Copier les commandes visibles</button>
+          <button class="btn-secondary" id="resetFilters">Reinitialiser</button>
+        </div>
+        <div class="count" id="count"></div>
+      </div>
+
+      <div class="quick" id="quick"></div>
+    </section>
+
+    <section id="sections" class="section-grid"></section>
+
+    <div class="empty" id="empty" hidden>
+      Aucune commande ne correspond a ta recherche.
+    </div>
+
+    <p class="foot">
+      Astuce: certaines commandes sont puissantes (ex: <code>push --force-with-lease</code>, <code>reset --hard</code>, <code>clean -fd</code>).
+      Utilise-les avec prudence et prefere une branche temporaire avant les operations destructrices.
+    </p>
+  </main>
+
+  <script>
+    const commandGroups = [
+      {
+        title: "Configuration Initiale",
+        key: "config",
+        items: [
+          { label: "Version de Git", cmd: "git --version", desc: "Verifier la version installee." },
+          { label: "Nom global", cmd: "git config --global user.name \"Ton Nom\"", desc: "Configurer l'auteur des commits." },
+          { label: "Email global", cmd: "git config --global user.email \"toi@email.com\"", desc: "Configurer l'email des commits." },
+          { label: "Lister config", cmd: "git config --list", desc: "Afficher toute la configuration active." },
+          { label: "Editeur par defaut", cmd: "git config --global core.editor \"code --wait\"", desc: "Utiliser VS Code pour les messages de commit." },
+          { label: "Branche par defaut main", cmd: "git config --global init.defaultBranch main", desc: "Definir main comme branche initiale." },
+          { label: "Coloration", cmd: "git config --global color.ui auto", desc: "Activer les couleurs du terminal." },
+          { label: "Cache credentials (macOS)", cmd: "git config --global credential.helper osxkeychain", desc: "Eviter de ressaisir le token en permanence." }
+        ]
+      },
+      {
+        title: "Creation Et Clonage",
+        key: "setup",
+        items: [
+          { label: "Initialiser depot", cmd: "git init", desc: "Creer un depot Git local." },
+          { label: "Cloner en HTTPS", cmd: "git clone https://github.com/owner/repo.git", desc: "Recuperer un depot distant." },
+          { label: "Cloner en SSH", cmd: "git clone git@github.com:owner/repo.git", desc: "Clone via cle SSH." },
+          { label: "Ajouter remote origin", cmd: "git remote add origin https://github.com/owner/repo.git", desc: "Relier le local a GitHub." },
+          { label: "Verifier remotes", cmd: "git remote -v", desc: "Voir les URL pull/push." }
+        ]
+      },
+      {
+        title: "Etat Et Inspection",
+        key: "status",
+        items: [
+          { label: "Etat court", cmd: "git status -sb", desc: "Vue rapide des fichiers modifies et de la branche." },
+          { label: "Diff non stage", cmd: "git diff", desc: "Voir les changements non indexes." },
+          { label: "Diff stage", cmd: "git diff --staged", desc: "Voir ce qui partira dans le prochain commit." },
+          { label: "Historique compact", cmd: "git log --oneline --graph --decorate --all", desc: "Visualiser l'historique proprement." },
+          { label: "Dernier commit detail", cmd: "git show --stat", desc: "Afficher le contenu du dernier commit." },
+          { label: "Qui a modifie", cmd: "git blame chemin/fichier", desc: "Trouver auteur et commit par ligne." },
+          { label: "Chercher dans l'historique", cmd: "git log --grep \"mot-cle\"", desc: "Filtrer les commits par message." },
+          { label: "Chercher dans le code", cmd: "git grep \"mot\"", desc: "Recherche texte dans la version courante." }
+        ]
+      },
+      {
+        title: "Ajouter Et Committer",
+        key: "commit",
+        items: [
+          { label: "Ajouter un fichier", cmd: "git add chemin/fichier", desc: "Indexer un fichier precis." },
+          { label: "Ajouter tout", cmd: "git add -A", desc: "Indexer toutes les modifications." },
+          { label: "Ajout interactif", cmd: "git add -p", desc: "Choisir les hunks a committer." },
+          { label: "Commit message court", cmd: "git commit -m \"feat: description\"", desc: "Creer un commit." },
+          { label: "Commit avec details", cmd: "git commit", desc: "Ouvrir l'editeur pour un message complet." },
+          { label: "Modifier dernier commit", cmd: "git commit --amend", desc: "Corriger message ou contenu du dernier commit." },
+          { label: "Amend sans changer message", cmd: "git commit --amend --no-edit", desc: "Ajouter des oublis au dernier commit." },
+          { label: "Signer commit", cmd: "git commit -S -m \"chore: commit signe\"", desc: "Commit GPG/SSH signe." }
+        ]
+      },
+      {
+        title: "Branches",
+        key: "branch",
+        items: [
+          { label: "Lister branches locales", cmd: "git branch", desc: "Voir les branches locales." },
+          { label: "Lister toutes les branches", cmd: "git branch -a", desc: "Locales + distantes." },
+          { label: "Creer branche", cmd: "git branch feature/nom", desc: "Creer sans changer de branche." },
+          { label: "Creer et switch", cmd: "git switch -c feature/nom", desc: "Creer puis se placer dessus." },
+          { label: "Changer de branche", cmd: "git switch main", desc: "Se deplacer sur une branche existante." },
+          { label: "Renommer branche courante", cmd: "git branch -m nouveau-nom", desc: "Renommer localement." },
+          { label: "Supprimer branche locale", cmd: "git branch -d feature/nom", desc: "Suppression securisee (si mergee)." },
+          { label: "Supprimer force", cmd: "git branch -D feature/nom", desc: "Suppression forcee locale." }
+        ]
+      },
+      {
+        title: "Push, Pull, Sync GitHub",
+        key: "sync",
+        items: [
+          { label: "Premier push avec upstream", cmd: "git push -u origin main", desc: "Definir la branche distante de suivi." },
+          { label: "Push branche courante", cmd: "git push", desc: "Envoyer les commits locaux." },
+          { label: "Push tag", cmd: "git push origin v1.0.0", desc: "Publier un tag specifique." },
+          { label: "Push tous les tags", cmd: "git push --tags", desc: "Publier tous les tags locaux." },
+          { label: "Fetch seulement", cmd: "git fetch origin", desc: "Recuperer les refs distantes sans merge." },
+          { label: "Pull rebase", cmd: "git pull --rebase", desc: "Mettre a jour en conservant un historique lineaire." },
+          { label: "Pull classique", cmd: "git pull", desc: "Fetch puis merge." },
+          { label: "Force push prudent", cmd: "git push --force-with-lease", desc: "Reecrire l'historique distant de maniere plus sure." },
+          { label: "Supprimer branche distante", cmd: "git push origin --delete feature/nom", desc: "Supprimer une branche sur GitHub." }
+        ]
+      },
+      {
+        title: "Fusion Et Rebase",
+        key: "merge",
+        items: [
+          { label: "Merge branche", cmd: "git merge feature/nom", desc: "Fusionner dans la branche courante." },
+          { label: "Merge sans fast-forward", cmd: "git merge --no-ff feature/nom", desc: "Forcer un commit de merge." },
+          { label: "Rebase sur main", cmd: "git rebase main", desc: "Rejouer les commits au-dessus de main." },
+          { label: "Rebase interactif", cmd: "git rebase -i HEAD~5", desc: "Squash, reword, reorder les 5 derniers commits." },
+          { label: "Continuer rebase", cmd: "git rebase --continue", desc: "Apres resolution des conflits." },
+          { label: "Annuler rebase", cmd: "git rebase --abort", desc: "Revenir a l'etat avant rebase." },
+          { label: "Cherry-pick", cmd: "git cherry-pick <commit-hash>", desc: "Appliquer un commit d'une autre branche." }
+        ]
+      },
+      {
+        title: "Gestion Des Conflits",
+        key: "conflict",
+        items: [
+          { label: "Lister fichiers en conflit", cmd: "git diff --name-only --diff-filter=U", desc: "Voir les fichiers non resolus." },
+          { label: "Marquer resolu", cmd: "git add fichier-resolu", desc: "Indexer le fichier apres correction." },
+          { label: "Voir ancetre commun", cmd: "git merge-base main feature/nom", desc: "Aide au debug de conflits." },
+          { label: "Outil merge", cmd: "git mergetool", desc: "Lancer l'outil de resolution configure." }
+        ]
+      },
+      {
+        title: "Stash",
+        key: "stash",
+        items: [
+          { label: "Stash rapide", cmd: "git stash", desc: "Sauvegarder temporairement le travail en cours." },
+          { label: "Stash avec message", cmd: "git stash push -m \"wip: sujet\"", desc: "Stash nomme." },
+          { label: "Inclure non suivis", cmd: "git stash -u", desc: "Inclure les fichiers untracked." },
+          { label: "Lister stashes", cmd: "git stash list", desc: "Voir la pile de stash." },
+          { label: "Afficher contenu stash", cmd: "git stash show -p stash@{0}", desc: "Inspecter les changements stashes." },
+          { label: "Appliquer stash", cmd: "git stash apply stash@{0}", desc: "Reappliquer sans retirer de la pile." },
+          { label: "Pop stash", cmd: "git stash pop", desc: "Appliquer puis retirer le plus recent." },
+          { label: "Supprimer stash", cmd: "git stash drop stash@{0}", desc: "Retirer un stash specifique." },
+          { label: "Vider les stashes", cmd: "git stash clear", desc: "Supprimer toute la pile." }
+        ]
+      },
+      {
+        title: "Annuler Et Recuperer",
+        key: "undo",
+        items: [
+          { label: "Restaurer un fichier", cmd: "git restore chemin/fichier", desc: "Annuler les changements non indexes d'un fichier." },
+          { label: "Retirer du stage", cmd: "git restore --staged chemin/fichier", desc: "Desindexer un fichier." },
+          { label: "Reset soft", cmd: "git reset --soft HEAD~1", desc: "Annuler le dernier commit en gardant le stage." },
+          { label: "Reset mixed", cmd: "git reset HEAD~1", desc: "Annuler commit et stage, garder le code." },
+          { label: "Reset hard", cmd: "git reset --hard HEAD~1", desc: "Annulation destructive du commit et du code local." },
+          { label: "Revert commit", cmd: "git revert <commit-hash>", desc: "Creer un commit d'annulation sans reecrire l'historique." },
+          { label: "Reflog", cmd: "git reflog", desc: "Retrouver des commits perdus." },
+          { label: "Recuperer depuis reflog", cmd: "git reset --hard <reflog-hash>", desc: "Revenir a un etat precedent via reflog." }
+        ]
+      },
+      {
+        title: "Tags Et Releases",
+        key: "tag",
+        items: [
+          { label: "Lister tags", cmd: "git tag", desc: "Voir tous les tags locaux." },
+          { label: "Creer tag annote", cmd: "git tag -a v1.0.0 -m \"release v1.0.0\"", desc: "Tag avec metadata." },
+          { label: "Voir details tag", cmd: "git show v1.0.0", desc: "Inspecter un tag." },
+          { label: "Supprimer tag local", cmd: "git tag -d v1.0.0", desc: "Effacer localement." },
+          { label: "Supprimer tag distant", cmd: "git push origin :refs/tags/v1.0.0", desc: "Effacer un tag sur GitHub." }
+        ]
+      },
+      {
+        title: "Nettoyage Et Maintenance",
+        key: "maintenance",
+        items: [
+          { label: "Supprimer refs distantes obsoletes", cmd: "git fetch -p", desc: "Nettoyer les branches supprimees sur remote." },
+          { label: "Prune origin", cmd: "git remote prune origin", desc: "Nettoyer les refs mortes de origin." },
+          { label: "Nettoyer fichiers non suivis", cmd: "git clean -fd", desc: "Supprimer fichiers/dossiers untracked (destructif)." },
+          { label: "Simulation clean", cmd: "git clean -fdn", desc: "Previsualiser avant suppression." },
+          { label: "GC", cmd: "git gc", desc: "Optimiser le stockage du depot." },
+          { label: "Verifier integrite", cmd: "git fsck", desc: "Verifier la sante des objets Git." }
+        ]
+      },
+      {
+        title: "Worktrees Et Submodules",
+        key: "advanced",
+        items: [
+          { label: "Ajouter un worktree", cmd: "git worktree add ../repo-feature feature/nom", desc: "Travailler sur 2 branches en parallele." },
+          { label: "Lister worktrees", cmd: "git worktree list", desc: "Afficher les repertoires rattaches." },
+          { label: "Supprimer worktree", cmd: "git worktree remove ../repo-feature", desc: "Retirer un worktree." },
+          { label: "Init submodules", cmd: "git submodule update --init --recursive", desc: "Initialiser et mettre a jour les submodules." },
+          { label: "Ajouter submodule", cmd: "git submodule add https://github.com/owner/lib.git libs/lib", desc: "Ajouter un sous-projet versionne." }
+        ]
+      },
+      {
+        title: "GitHub CLI (gh)",
+        key: "gh",
+        items: [
+          { label: "Connexion GitHub", cmd: "gh auth login", desc: "Se connecter a GitHub via terminal." },
+          { label: "Voir statut auth", cmd: "gh auth status", desc: "Verifier la session GH CLI." },
+          { label: "Creer repo", cmd: "gh repo create nom-repo --public --source=. --remote=origin --push", desc: "Creer et pousser un projet local vers GitHub." },
+          { label: "Fork repo", cmd: "gh repo fork owner/repo --clone", desc: "Fork + clone en une commande." },
+          { label: "Creer PR", cmd: "gh pr create --fill", desc: "Ouvrir une pull request." },
+          { label: "Lister PR", cmd: "gh pr list", desc: "Voir les pull requests." },
+          { label: "Checkout PR", cmd: "gh pr checkout 123", desc: "Recuperer localement une PR." },
+          { label: "Merger PR", cmd: "gh pr merge 123 --squash --delete-branch", desc: "Fusionner une PR depuis le terminal." },
+          { label: "Lister issues", cmd: "gh issue list", desc: "Voir les issues du repo." },
+          { label: "Creer issue", cmd: "gh issue create --title \"Titre\" --body \"Description\"", desc: "Creer une issue rapidement." },
+          { label: "Executions CI", cmd: "gh run list", desc: "Afficher les runs GitHub Actions." },
+          { label: "Voir logs run", cmd: "gh run view <id> --log", desc: "Lire les logs d'un workflow." }
+        ]
+      },
+      {
+        title: "Alias Utiles",
+        key: "alias",
+        items: [
+          { label: "Alias st", cmd: "git config --global alias.st status -sb", desc: "Raccourci pour status compact." },
+          { label: "Alias co", cmd: "git config --global alias.co switch", desc: "Raccourci switch." },
+          { label: "Alias br", cmd: "git config --global alias.br branch", desc: "Raccourci branch." },
+          { label: "Alias ci", cmd: "git config --global alias.ci commit", desc: "Raccourci commit." },
+          { label: "Alias lg", cmd: "git config --global alias.lg \"log --oneline --graph --decorate --all\"", desc: "Historique lisible en une commande." },
+          { label: "Utiliser alias", cmd: "git st", desc: "Exemple d'execution d'un alias." }
+        ]
+      }
+    ];
+
+    const quickActions = [
+      { title: "Status rapide", cmd: "git status -sb" },
+      { title: "Commit standard", cmd: "git add -A && git commit -m \"feat: message\"" },
+      { title: "Push branche", cmd: "git push" },
+      { title: "Nouvelle branche", cmd: "git switch -c feature/nom" },
+      { title: "Pull propre", cmd: "git pull --rebase" },
+      { title: "Creer PR", cmd: "gh pr create --fill" }
+    ];
+
+    const state = {
+      query: "",
+      category: "all"
+    };
+
+    const searchEl = document.getElementById("search");
+    const categoryEl = document.getElementById("category");
+    const sectionsEl = document.getElementById("sections");
+    const countEl = document.getElementById("count");
+    const emptyEl = document.getElementById("empty");
+    const quickEl = document.getElementById("quick");
+
+    function normalize(value) {
+      return value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+    }
+
+    async function copyText(text, button) {
+      try {
+        await navigator.clipboard.writeText(text);
+        if (button) {
+          const prev = button.textContent;
+          button.textContent = "Copie";
+          button.classList.add("copied");
+          setTimeout(() => {
+            button.textContent = prev;
+            button.classList.remove("copied");
+          }, 900);
+        }
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    function makeButton(label, cmd) {
+      const btn = document.createElement("button");
+      btn.className = "copy";
+      btn.textContent = label;
+      btn.addEventListener("click", () => copyText(cmd, btn));
+      return btn;
+    }
+
+    function renderQuick() {
+      quickEl.innerHTML = "";
+      quickActions.forEach((action) => {
+        const btn = document.createElement("button");
+        btn.innerHTML = `<strong>${action.title}</strong><code>${action.cmd}</code>`;
+        btn.addEventListener("click", () => copyText(action.cmd));
+        quickEl.appendChild(btn);
+      });
+    }
+
+    function renderCategories() {
+      categoryEl.innerHTML = "";
+      const allOpt = document.createElement("option");
+      allOpt.value = "all";
+      allOpt.textContent = "Toutes les categories";
+      categoryEl.appendChild(allOpt);
+
+      commandGroups.forEach((group) => {
+        const opt = document.createElement("option");
+        opt.value = group.key;
+        opt.textContent = group.title;
+        categoryEl.appendChild(opt);
+      });
+    }
+
+    function filterCommands() {
+      const q = normalize(state.query.trim());
+      return commandGroups
+        .filter((g) => state.category === "all" || g.key === state.category)
+        .map((g) => {
+          const items = g.items.filter((item) => {
+            if (!q) return true;
+            const hay = normalize(`${item.label} ${item.cmd} ${item.desc} ${g.title}`);
+            return hay.includes(q);
+          });
+          return { ...g, items };
+        })
+        .filter((g) => g.items.length > 0);
+    }
+
+    function renderSections() {
+      sectionsEl.innerHTML = "";
+      const groups = filterCommands();
+      const total = groups.reduce((acc, group) => acc + group.items.length, 0);
+      countEl.textContent = `${total} commande${total > 1 ? "s" : ""} affichee${total > 1 ? "s" : ""}.`;
+
+      emptyEl.hidden = total !== 0;
+
+      groups.forEach((group) => {
+        const section = document.createElement("article");
+        section.className = "section";
+
+        const head = document.createElement("div");
+        head.className = "section-head";
+        const h2 = document.createElement("h2");
+        h2.textContent = group.title;
+        const small = document.createElement("small");
+        small.textContent = `${group.items.length} commande${group.items.length > 1 ? "s" : ""}`;
+
+        const groupCopy = document.createElement("button");
+        groupCopy.className = "btn-secondary";
+        groupCopy.textContent = "Copier la section";
+        groupCopy.addEventListener("click", () => {
+          const text = group.items.map((i) => i.cmd).join("\n");
+          copyText(text, groupCopy);
+        });
+
+        const titleBlock = document.createElement("div");
+        titleBlock.append(h2, small);
+        head.append(titleBlock, groupCopy);
+
+        const rows = document.createElement("div");
+        rows.className = "rows";
+
+        group.items.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "row";
+
+          const info = document.createElement("div");
+          const label = document.createElement("strong");
+          label.textContent = item.label;
+          const desc = document.createElement("p");
+          desc.textContent = item.desc;
+          const cmd = document.createElement("code");
+          cmd.textContent = item.cmd;
+          info.append(label, desc, cmd);
+
+          const actions = document.createElement("div");
+          actions.className = "action-col";
+          actions.append(makeButton("Copier", item.cmd));
+
+          row.append(info, actions);
+          rows.appendChild(row);
+        });
+
+        section.append(head, rows);
+        sectionsEl.appendChild(section);
+      });
+    }
+
+    document.getElementById("copyAllVisible").addEventListener("click", (e) => {
+      const groups = filterCommands();
+      const all = groups.flatMap((g) => g.items.map((i) => i.cmd));
+      copyText(all.join("\n"), e.currentTarget);
+    });
+
+    document.getElementById("resetFilters").addEventListener("click", () => {
+      state.query = "";
+      state.category = "all";
+      searchEl.value = "";
+      categoryEl.value = "all";
+      renderSections();
+    });
+
+    searchEl.addEventListener("input", (e) => {
+      state.query = e.target.value;
+      renderSections();
+    });
+
+    categoryEl.addEventListener("change", (e) => {
+      state.category = e.target.value;
+      renderSections();
+    });
+
+    renderQuick();
+    renderCategories();
+    renderSections();
+  </script>
+</body>
+</html>
