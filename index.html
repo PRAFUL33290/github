@@ -342,6 +342,21 @@
   <script>
     const commandGroups = [
       {
+        title: "Commandes Essentielles",
+        key: "essentiels",
+        items: [
+          { label: "Etat", cmd: "git status", desc: "Affiche les fichiers modifies et l'etat de ton depot." },
+          { label: "Preparation", cmd: "git add .", desc: "Ajoute tous les fichiers modifies a la file d'attente." },
+          { label: "Validation", cmd: "git commit -m \"message\"", desc: "Enregistre tes modifications avec un message explicatif." },
+          { label: "Envoi", cmd: "git push", desc: "Envoie tes commits locaux vers GitHub." },
+          { label: "Reception", cmd: "git pull", desc: "Telecharge et fusionne les changements du serveur." },
+          { label: "Historique", cmd: "git log --oneline --graph --all", desc: "Affiche l'historique de facon visuelle (appuie sur q pour sortir)." },
+          { label: "Securite", cmd: "git stash", desc: "Met de cote tes modifications en cours (temporaire)." },
+          { label: "Restauration", cmd: "git stash pop", desc: "Recupere et reapplique les modifications mises de cote." },
+          { label: "Annulation", cmd: "git checkout -- .", desc: "Annule toutes les modifications non indexees dans le repertoire courant." }
+        ]
+      },
+      {
         title: "Configuration Initiale",
         key: "config",
         items: [

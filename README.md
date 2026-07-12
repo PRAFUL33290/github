@@ -10,6 +10,7 @@ Cette mini application web fournit un guide pratique des commandes Git et GitHub
 
 ## Contenu
 
+- Commandes essentielles (état, add, commit, push, pull, log, stash, annulation)
 - Configuration Git
 - Creation/clonage de depot
 - Status, diff, log
