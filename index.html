@@ -135,6 +135,26 @@
       color: var(--ink);
     }
 
+    .btn-link {
+      display: inline-block;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+      font-family: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .btn-link:hover {
+      transform: translateY(-1px);
+      background: #f9f9f9;
+    }
+
     .count {
       color: var(--muted);
       font-size: 0.88rem;
@@ -320,6 +340,7 @@
           <select id="category"></select>
           <button class="btn-primary" id="copyAllVisible">Copier les commandes visibles</button>
           <button class="btn-secondary" id="resetFilters">Reinitialiser</button>
+          <a href="help.html" class="btn-link">Aide</a>
         </div>
         <div class="count" id="count"></div>
       </div>
