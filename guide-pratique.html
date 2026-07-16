@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guide Pratique Git - GitHub Terminal Command Center</title>
+  <style>
+    :root {
+      --bg-1: #f6f3ee;
+      --bg-2: #d8e5ea;
+      --ink: #132126;
+      --muted: #3f555d;
+      --card: rgba(255, 255, 255, 0.8);
+      --line: rgba(19, 33, 38, 0.15);
+      --accent: #0e7c66;
+      --accent-2: #d95f2a;
+      --ok: #156f31;
+      --shadow: 0 14px 30px rgba(20, 36, 45, 0.12);
+      --mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(900px 500px at -10% -10%, #f7c2a722, transparent 70%),
+        radial-gradient(800px 450px at 110% 20%, #63bdbd22, transparent 60%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(900px, 92vw);
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(130deg, #ffffffcc, #f9f5f0cc);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 20px;
+      animation: rise 500ms ease;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffcd8a88, #ffcd8a00 70%);
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      letter-spacing: 0.2px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 72ch;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.98rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 120ms;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #0c6b58;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .btn-secondary:hover {
+      background: #f9f9f9;
+      transform: translateY(-1px);
+    }
+
+    .highlight-box {
+      background: #fff3e0;
+      border-left: 4px solid var(--accent-2);
+      padding: 14px 16px;
+      margin: 0 0 20px;
+      border-radius: 6px;
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    .highlight-box strong {
+      color: var(--accent-2);
+    }
+
+    .accordion {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+      animation: rise 500ms ease;
+    }
+
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 18px 22px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: var(--ink);
+    }
+
+    .accordion-header:hover {
+      background: #ffffff55;
+    }
+
+    .accordion-icon {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.1rem;
+      transition: transform 200ms ease;
+    }
+
+    .accordion[data-open="true"] .accordion-icon {
+      transform: rotate(45deg);
+    }
+
+    .accordion-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 220ms ease;
+    }
+
+    .accordion[data-open="true"] .accordion-body {
+      grid-template-rows: 1fr;
+    }
+
+    .accordion-body-inner {
+      overflow: hidden;
+      padding: 0 22px;
+    }
+
+    .accordion[data-open="true"] .accordion-body-inner {
+      padding: 0 22px 22px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .step {
+      margin-bottom: 16px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .code-block {
+      position: relative;
+      background: #12212611;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 6px;
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding-right: 90px;
+      font-family: var(--mono);
+      font-size: 0.86rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--ink);
+    }
+
+    .code-block .copy {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--accent-2);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      min-width: 68px;
+      font-family: inherit;
+      transition: all 120ms;
+    }
+
+    .code-block .copy.copied {
+      background: var(--ok) !important;
+    }
+
+    .step-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin: 4px 0 0;
+    }
+
+    code {
+      font-family: var(--mono);
+      background: #1321260c;
+      border: 1px solid #1321261c;
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-size: 0.84rem;
+      word-break: break-word;
+    }
+
+    .foot {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .code-block pre {
+        padding-right: 0;
+        padding-bottom: 36px;
+      }
+
+      .code-block .copy {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>📄 Guide Pratique Git : Les Cas Fréquents</h1>
+      <p class="subtitle">
+        Des fiches "recettes" prêtes à l'emploi pour les actions Git du quotidien : copie, colle, adapte le nom
+        de ta branche, et c'est réglé.
+      </p>
+      <div class="nav-buttons">
+        <a href="index.html" class="btn btn-primary">← Retour aux commandes</a>
+        <a href="help.html" class="btn-secondary">Aide</a>
+      </div>
+    </section>
+
+    <div class="highlight-box">
+      💡 <strong>Rappel :</strong> Avant de lancer ces commandes, assure-toi d'être positionné dans le dossier
+      de ton projet via ton terminal.
+    </div>
+
+    <div id="accordion"></div>
+
+    <p class="foot">
+      Idée : ajoute d'autres cas spécifiques comme la gestion des conflits ou le nettoyage des branches
+      distantes au fur et à mesure de tes besoins.
+    </p>
+  </main>
+
+  <script>
+    const recipes = [
+      {
+        title: "1. Créer une nouvelle branche et travailler dessus",
+        intro: "Tu veux développer une nouvelle fonctionnalité ou corriger un bug sans toucher à la version stable (main).",
+        steps: [
+          {
+            label: "Étape 1 : Créer et basculer sur la nouvelle branche",
+            cmds: ["git checkout -b nom-de-ta-branche"],
+            note: "Optionnel : sur une version récente de Git, tu peux aussi utiliser git switch -c nom-de-ta-branche."
+          },
+          {
+            label: "Étape 2 : Travailler, enregistrer et nommer tes modifications",
+            cmds: ["git add .", "git commit -m \"Description claire de ce que tu as fait\""]
+          },
+          {
+            label: "Étape 3 : Envoyer (pousser) la branche sur GitHub/GitLab pour la première fois",
+            cmds: ["git push -u origin nom-de-ta-branche"],
+            note: "Le -u (ou --set-upstream) lie ta branche locale à la branche distante. Les fois suivantes, un simple git push suffira."
+          }
+        ]
+      },
+      {
+        title: "2. Mettre à jour son site (récupérer les dernières modifs du main)",
+        intro: "Tu as fini ton travail sur ta branche, ou tu veux simplement récupérer le code le plus récent qui est en ligne pour éviter les conflits.",
+        steps: [
+          {
+            label: "Étape 1 : Revenir sur la branche principale",
+            cmds: ["git checkout main"]
+          },
+          {
+            label: "Étape 2 : Récupérer et fusionner les nouveautés du serveur",
+            cmds: ["git pull"]
+          }
+        ]
+      },
+      {
+        title: "3. Fusionner ton travail (intégrer ta branche dans main)",
+        intro: "Ta fonctionnalité est prête, tu veux l'ajouter officiellement au site.",
+        steps: [
+          {
+            label: "Étape 1 : Revenir sur main et s'assurer qu'il est à jour",
+            cmds: ["git checkout main", "git pull"]
+          },
+          {
+            label: "Étape 2 : Fusionner ta branche dans main",
+            cmds: ["git merge nom-de-ta-branche"]
+          },
+          {
+            label: "Étape 3 : Pousser le résultat en ligne",
+            cmds: ["git push origin main"]
+          },
+          {
+            label: "Étape 4 (optionnel) : Nettoyer en supprimant ta branche locale devenue inutile",
+            cmds: ["git branch -d nom-de-ta-branche"]
+          }
+        ]
+      },
+      {
+        title: "4. Le \"Oups !\" : annuler des modifications en cours",
+        intro: "Tu as modifié des fichiers, le code ne marche plus du tout, et tu veux revenir au dernier état propre (ton dernier commit).",
+        steps: [
+          {
+            label: "Pour abandonner toutes les modifications non commitées d'un coup",
+            cmds: ["git restore ."]
+          }
+        ]
+      },
+      {
+        title: "5. Voir où on en est (la commande boussole)",
+        intro: "Tu ne sais plus sur quelle branche tu te trouves ou si tu as des fichiers non enregistrés.",
+        steps: [
+          {
+            label: "Vérifier l'état du dépôt",
+            cmds: ["git status"]
+          }
+        ]
+      }
+    ];
+
+    async function copyText(text, button) {
+      try {
+        await navigator.clipboard.writeText(text);
+        if (button) {
+          const prev = button.textContent;
+          button.textContent = "Copié";
+          button.classList.add("copied");
+          setTimeout(() => {
+            button.textContent = prev;
+            button.classList.remove("copied");
+          }, 900);
+        }
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    function makeCodeBlock(command) {
+      const block = document.createElement("div");
+      block.className = "code-block";
+
+      const pre = document.createElement("pre");
+      pre.textContent = command;
+
+      const btn = document.createElement("button");
+      btn.className = "copy";
+      btn.textContent = "Copier";
+      btn.addEventListener("click", () => copyText(command, btn));
+
+      block.append(pre, btn);
+      return block;
+    }
+
+    function renderAccordion() {
+      const root = document.getElementById("accordion");
+      root.innerHTML = "";
+
+      recipes.forEach((recipe, index) => {
+        const item = document.createElement("div");
+        item.className = "accordion";
+        item.dataset.open = index === 0 ? "true" : "false";
+
+        const header = document.createElement("button");
+        header.className = "accordion-header";
+        header.innerHTML = `<h2>${recipe.title}</h2><span class="accordion-icon">+</span>`;
+        header.addEventListener("click", () => {
+          item.dataset.open = item.dataset.open === "true" ? "false" : "true";
+        });
+
+        const body = document.createElement("div");
+        body.className = "accordion-body";
+        const bodyInner = document.createElement("div");
+        bodyInner.className = "accordion-body-inner";
+
+        if (recipe.intro) {
+          const intro = document.createElement("p");
+          intro.textContent = recipe.intro;
+          bodyInner.appendChild(intro);
+        }
+
+        recipe.steps.forEach((step) => {
+          const stepEl = document.createElement("div");
+          stepEl.className = "step";
+
+          const label = document.createElement("strong");
+          label.textContent = step.label;
+          stepEl.appendChild(label);
+
+          step.cmds.forEach((cmd) => stepEl.appendChild(makeCodeBlock(cmd)));
+
+          if (step.note) {
+            const note = document.createElement("p");
+            note.className = "step-note";
+            note.textContent = step.note;
+            stepEl.appendChild(note);
+          }
+
+          bodyInner.appendChild(stepEl);
+        });
+
+        body.appendChild(bodyInner);
+        item.append(header, body);
+        root.appendChild(item);
+      });
+    }
+
+    renderAccordion();
+  </script>
+</body>
+</html>
