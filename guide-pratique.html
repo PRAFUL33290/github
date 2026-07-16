@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guide Pratique Git - GitHub Terminal Command Center</title>
+  <title>Guide Pratique — Le workflow Git de A à Z</title>
   <style>
     :root {
       --bg-1: #f6f3ee;
@@ -21,9 +21,7 @@
       --radius: 14px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -37,7 +35,7 @@
     }
 
     .wrap {
-      width: min(900px, 92vw);
+      width: min(860px, 92vw);
       margin: 0 auto;
       padding: 28px 0 48px;
     }
@@ -72,12 +70,6 @@
       letter-spacing: 0.2px;
     }
 
-    h2 {
-      margin: 0;
-      font-size: 1.15rem;
-      color: var(--ink);
-    }
-
     .subtitle {
       margin: 0;
       max-width: 72ch;
@@ -86,62 +78,53 @@
       font-size: 0.98rem;
     }
 
-    .nav-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
+    .btn-link {
       display: inline-block;
+      margin-top: 16px;
       text-decoration: none;
-      border: none;
-      border-radius: 10px;
-      padding: 11px 18px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 120ms;
-      font-family: inherit;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: #0c6b58;
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: #ffffff;
-      color: var(--ink);
       border: 1px solid var(--line);
-    }
-
-    .btn-secondary:hover {
-      background: #f9f9f9;
-      transform: translateY(-1px);
-    }
-
-    .highlight-box {
-      background: #fff3e0;
-      border-left: 4px solid var(--accent-2);
-      padding: 14px 16px;
-      margin: 0 0 20px;
-      border-radius: 6px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: #fff;
       color: var(--ink);
+      transition: transform 160ms ease;
+    }
+
+    .btn-link:hover { transform: translateY(-1px); }
+
+    .principle {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      animation: rise 500ms ease;
+    }
+
+    .principle h2 {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+    }
+
+    .principle ol {
+      margin: 0 0 12px;
+      padding-left: 22px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.93rem;
+    }
+
+    .principle p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
       line-height: 1.55;
     }
 
-    .highlight-box strong {
-      color: var(--accent-2);
-    }
-
-    .accordion {
+    .step {
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--card);
@@ -151,130 +134,133 @@
       animation: rise 500ms ease;
     }
 
-    .accordion-header {
+    .step-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      width: 100%;
-      background: none;
-      border: none;
-      padding: 18px 22px;
-      cursor: pointer;
-      text-align: left;
-      font-family: inherit;
-      color: var(--ink);
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffffcf, #fdf8f3cf);
     }
 
-    .accordion-header:hover {
-      background: #ffffff55;
-    }
-
-    .accordion-icon {
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
+    .step-num {
+      flex: none;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: var(--accent);
       color: #fff;
-      font-size: 1.1rem;
-      transition: transform 200ms ease;
-    }
-
-    .accordion[data-open="true"] .accordion-icon {
-      transform: rotate(45deg);
-    }
-
-    .accordion-body {
       display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 220ms ease;
+      place-items: center;
+      font-weight: 700;
+      font-size: 1.05rem;
     }
 
-    .accordion[data-open="true"] .accordion-body {
-      grid-template-rows: 1fr;
-    }
-
-    .accordion-body-inner {
-      overflow: hidden;
-      padding: 0 22px;
-    }
-
-    .accordion[data-open="true"] .accordion-body-inner {
-      padding: 0 22px 22px;
-    }
-
-    p {
-      margin: 0 0 14px;
-      line-height: 1.6;
-      color: var(--ink);
-    }
-
-    .step {
-      margin-bottom: 16px;
-    }
-
-    .step strong {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .code-block {
-      position: relative;
-      background: #12212611;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 6px;
-    }
-
-    .code-block pre {
+    .step-head h2 {
       margin: 0;
-      padding-right: 90px;
-      font-family: var(--mono);
-      font-size: 0.86rem;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: var(--ink);
+      font-size: 1.08rem;
     }
 
-    .code-block .copy {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: var(--accent-2);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      min-width: 68px;
-      font-family: inherit;
-      transition: all 120ms;
-    }
-
-    .code-block .copy.copied {
-      background: var(--ok) !important;
-    }
-
-    .step-note {
+    .step-head small {
+      display: block;
       color: var(--muted);
-      font-size: 0.88rem;
-      margin: 4px 0 0;
+      font-size: 0.85rem;
+      margin-top: 2px;
     }
 
-    code {
+    .step-body { padding: 16px 20px 20px; }
+
+    .step-body p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+
+    .step-body p strong { color: var(--ink); }
+
+    .cmd {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 10px;
+    }
+
+    .cmd code {
+      flex: 1;
       font-family: var(--mono);
       background: #1321260c;
       border: 1px solid #1321261c;
       border-radius: 8px;
-      padding: 2px 6px;
-      font-size: 0.84rem;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      word-break: break-word;
+    }
+
+    .cmd .note {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 4px;
+      font-family: var(--sans);
+    }
+
+    button.copy {
+      flex: none;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--accent-2);
+      color: #fff;
+      min-width: 78px;
+      font-family: inherit;
+      transition: transform 160ms ease, background-color 160ms ease;
+    }
+
+    button.copy:hover { transform: translateY(-1px); }
+    button.copy.copied { background: var(--ok); }
+
+    .why {
+      border-left: 3px solid var(--accent);
+      background: #0e7c660d;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .why strong { color: var(--accent); }
+
+    .loop {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 20px 24px;
+      margin-top: 24px;
+      text-align: center;
+      animation: rise 500ms ease;
+    }
+
+    .loop h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+    }
+
+    .loop code {
+      display: inline-block;
+      font-family: var(--mono);
+      background: #1321260c;
+      border: 1px solid #1321261c;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      line-height: 1.7;
       word-break: break-word;
     }
 
@@ -283,161 +269,130 @@
       color: var(--muted);
       font-size: 0.85rem;
       line-height: 1.55;
+      text-align: center;
     }
 
     @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 720px) {
-      .nav-buttons {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-        text-align: center;
-      }
-
-      .code-block pre {
-        padding-right: 0;
-        padding-bottom: 36px;
-      }
-
-      .code-block .copy {
-        top: auto;
-        bottom: 10px;
-        right: 10px;
-      }
+    @media (max-width: 600px) {
+      .cmd { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="hero">
-      <h1>📄 Guide Pratique Git : Les Cas Fréquents</h1>
+      <h1>Le workflow Git, de A à Z</h1>
       <p class="subtitle">
-        Des fiches "recettes" prêtes à l'emploi pour les actions Git du quotidien : copie, colle, adapte le nom
-        de ta branche, et c'est réglé.
+        Scénario : tu ouvres ton projet dans un Codespace et tu veux travailler dessus.
+        Voici les 7 étapes, dans l'ordre, avec le pourquoi à chaque fois. C'est toujours la même boucle.
       </p>
-      <div class="nav-buttons">
-        <a href="index.html" class="btn btn-primary">← Retour aux commandes</a>
-        <a href="help.html" class="btn-secondary">Aide</a>
-      </div>
+      <a href="index.html" class="btn-link">← Retour aux commandes</a>
     </section>
 
-    <div class="highlight-box">
-      💡 <strong>Rappel :</strong> Avant de lancer ces commandes, assure-toi d'être positionné dans le dossier
-      de ton projet via ton terminal.
-    </div>
+    <section class="principle">
+      <h2>Avant tout : les 3 endroits où vit ton code</h2>
+      <ol>
+        <li><strong>Tes fichiers</strong> dans le Codespace — ce que tu modifies.</li>
+        <li><strong>Le dépôt Git local</strong> — les « photos » (commits) de ton travail.</li>
+        <li><strong>GitHub</strong> (le distant, <code>origin</code>) — la copie en ligne, la vraie sauvegarde.</li>
+      </ol>
+      <p>Tout le workflow consiste à faire circuler ton travail : fichiers → commit → push vers GitHub. Rien de plus.</p>
+    </section>
 
-    <div id="accordion"></div>
+    <div id="steps"></div>
+
+    <section class="loop">
+      <h2>La boucle à retenir</h2>
+      <code>main propre → branche → travail → add / commit → push → Pull Request → merge → retour sur main → pull</code>
+    </section>
 
     <p class="foot">
-      Idée : ajoute d'autres cas spécifiques comme la gestion des conflits ou le nettoyage des branches
-      distantes au fur et à mesure de tes besoins.
+      Un doute ? <code>git status</code> ne casse jamais rien et te dit toujours où tu en es.
     </p>
   </main>
 
   <script>
-    const recipes = [
+    const steps = [
       {
-        title: "1. Créer une nouvelle branche et travailler dessus",
-        intro: "Tu veux développer une nouvelle fonctionnalité ou corriger un bug sans toucher à la version stable (main).",
-        steps: [
-          {
-            label: "Étape 1 : Créer et basculer sur la nouvelle branche",
-            cmds: ["git checkout -b nom-de-ta-branche"],
-            note: "Optionnel : sur une version récente de Git, tu peux aussi utiliser git switch -c nom-de-ta-branche."
-          },
-          {
-            label: "Étape 2 : Travailler, enregistrer et nommer tes modifications",
-            cmds: ["git add .", "git commit -m \"Description claire de ce que tu as fait\""]
-          },
-          {
-            label: "Étape 3 : Envoyer (pousser) la branche sur GitHub/GitLab pour la première fois",
-            cmds: ["git push -u origin nom-de-ta-branche"],
-            note: "Le -u (ou --set-upstream) lie ta branche locale à la branche distante. Les fois suivantes, un simple git push suffira."
-          }
-        ]
+        title: "Ouvre le Codespace : vérifie où tu es",
+        sub: "Toujours commencer par un état des lieux",
+        intro: "Avant de toucher quoi que ce soit, regarde sur quelle branche tu es et s'il reste des modifications en attente.",
+        cmds: [
+          { cmd: "git status", note: "Fichiers modifiés + branche courante." },
+          { cmd: "git branch", note: "Liste des branches, l'étoile = où tu es." }
+        ],
+        why: "Si tu commences à travailler sans savoir où tu es, tu risques de committer sur la mauvaise branche. Le bon point de départ : être sur main, avec un statut propre."
       },
       {
-        title: "2. Mettre à jour son site (récupérer les dernières modifs du main)",
-        intro: "Tu as fini ton travail sur ta branche, ou tu veux simplement récupérer le code le plus récent qui est en ligne pour éviter les conflits.",
-        steps: [
-          {
-            label: "Étape 1 : Revenir sur la branche principale",
-            cmds: ["git checkout main"]
-          },
-          {
-            label: "Étape 2 : Récupérer et fusionner les nouveautés du serveur",
-            cmds: ["git pull"]
-          }
-        ]
+        title: "Crée une branche AVANT de travailler",
+        sub: "Jamais directement sur main",
+        intro: "Une seule commande crée la branche et te place dessus :",
+        cmds: [
+          { cmd: "git checkout -b ma-fonctionnalite", note: "-b = créer + basculer en une fois. Nomme la branche d'après ce que tu vas faire." }
+        ],
+        why: "main doit rester la version propre qui marche. Tu travailles sur une branche à côté : si tu casses tout, main n'est pas touché — tu jettes la branche et tu recommences."
       },
       {
-        title: "3. Fusionner ton travail (intégrer ta branche dans main)",
-        intro: "Ta fonctionnalité est prête, tu veux l'ajouter officiellement au site.",
-        steps: [
-          {
-            label: "Étape 1 : Revenir sur main et s'assurer qu'il est à jour",
-            cmds: ["git checkout main", "git pull"]
-          },
-          {
-            label: "Étape 2 : Fusionner ta branche dans main",
-            cmds: ["git merge nom-de-ta-branche"]
-          },
-          {
-            label: "Étape 3 : Pousser le résultat en ligne",
-            cmds: ["git push origin main"]
-          },
-          {
-            label: "Étape 4 (optionnel) : Nettoyer en supprimant ta branche locale devenue inutile",
-            cmds: ["git branch -d nom-de-ta-branche"]
-          }
-        ]
+        title: "Travaille (avec Claude Code ou à la main)",
+        sub: "Modifier les fichiers ne sauvegarde rien dans Git",
+        intro: "Tu codes, ou tu demandes à Claude Code (« ajoute une page contact », « corrige le CSS »...). À ce stade, ce ne sont que des fichiers modifiés : rien n'est encore enregistré dans Git.",
+        cmds: [
+          { cmd: "git status", note: "À tout moment, pour voir ce qui a changé." }
+        ],
+        why: "Comprendre ça évite 90 % de la confusion : modifier ≠ sauvegarder. La sauvegarde, c'est l'étape suivante."
       },
       {
-        title: "4. Le \"Oups !\" : annuler des modifications en cours",
-        intro: "Tu as modifié des fichiers, le code ne marche plus du tout, et tu veux revenir au dernier état propre (ton dernier commit).",
-        steps: [
-          {
-            label: "Pour abandonner toutes les modifications non commitées d'un coup",
-            cmds: ["git restore ."]
-          }
-        ]
+        title: "Commit : sauvegarde une étape",
+        sub: "add = choisir quoi inclure, commit = prendre la photo",
+        intro: "Deux commandes, toujours dans cet ordre :",
+        cmds: [
+          { cmd: "git add .", note: "Prépare toutes les modifications." },
+          { cmd: "git commit -m \"Ajoute la page contact\"", note: "Enregistre avec un message qui décrit le changement." }
+        ],
+        why: "Fais des petits commits réguliers plutôt qu'un énorme à la fin : chaque commit est un point de restauration auquel tu peux revenir."
       },
       {
-        title: "5. Voir où on en est (la commande boussole)",
-        intro: "Tu ne sais plus sur quelle branche tu te trouves ou si tu as des fichiers non enregistrés.",
-        steps: [
-          {
-            label: "Vérifier l'état du dépôt",
-            cmds: ["git status"]
-          }
-        ]
+        title: "Push : envoie sur GitHub",
+        sub: "Tant que tu n'as pas pushé, ton travail n'existe que dans le Codespace",
+        intro: "La première fois pour une branche, ajoute -u pour la lier à GitHub :",
+        cmds: [
+          { cmd: "git push -u origin ma-fonctionnalite", note: "Première fois seulement." },
+          { cmd: "git push", note: "Toutes les fois suivantes." }
+        ],
+        why: "Un Codespace peut être supprimé : push = sauvegarde réelle. Le -u lie ta branche locale à celle sur GitHub, ensuite un simple git push suffit."
+      },
+      {
+        title: "Pull Request, puis merge",
+        sub: "« Je propose d'intégrer ma branche dans main »",
+        intro: "Depuis le terminal avec GitHub CLI, ou via le bouton sur github.com :",
+        cmds: [
+          { cmd: "gh pr create --fill", note: "Ouvre la PR avec tes messages de commit comme description." },
+          { cmd: "gh pr merge --squash --delete-branch", note: "Fusionne dans main et supprime la branche sur GitHub." }
+        ],
+        why: "La PR te montre le diff complet avant d'intégrer, et laisse une trace dans l'historique. C'est aussi le réflexe indispensable dès que tu travailles en équipe."
+      },
+      {
+        title: "Retour sur main, et on nettoie",
+        sub: "Prêt pour la tâche suivante",
+        intro: "Ton main local ne connaît pas encore le merge fait sur GitHub :",
+        cmds: [
+          { cmd: "git checkout main", note: "Reviens sur main." },
+          { cmd: "git pull", note: "Récupère le merge depuis GitHub." },
+          { cmd: "git branch -d ma-fonctionnalite", note: "Supprime la branche locale devenue inutile." }
+        ],
+        why: "Tu repars d'un main propre et à jour. Prochaine tâche ? Retour à l'étape 2 : nouvelle branche."
       }
     ];
+
+    const stepsEl = document.getElementById("steps");
 
     async function copyText(text, button) {
       try {
         await navigator.clipboard.writeText(text);
-        if (button) {
-          const prev = button.textContent;
-          button.textContent = "Copié";
-          button.classList.add("copied");
-          setTimeout(() => {
-            button.textContent = prev;
-            button.classList.remove("copied");
-          }, 900);
-        }
       } catch {
         const ta = document.createElement("textarea");
         ta.value = text;
@@ -446,78 +401,67 @@
         document.execCommand("copy");
         ta.remove();
       }
+      if (button) {
+        const prev = button.textContent;
+        button.textContent = "Copié";
+        button.classList.add("copied");
+        setTimeout(() => {
+          button.textContent = prev;
+          button.classList.remove("copied");
+        }, 900);
+      }
     }
 
-    function makeCodeBlock(command) {
-      const block = document.createElement("div");
-      block.className = "code-block";
+    steps.forEach((step, i) => {
+      const section = document.createElement("section");
+      section.className = "step";
 
-      const pre = document.createElement("pre");
-      pre.textContent = command;
+      const head = document.createElement("div");
+      head.className = "step-head";
+      const num = document.createElement("div");
+      num.className = "step-num";
+      num.textContent = i + 1;
+      const titleBlock = document.createElement("div");
+      const h2 = document.createElement("h2");
+      h2.textContent = step.title;
+      const small = document.createElement("small");
+      small.textContent = step.sub;
+      titleBlock.append(h2, small);
+      head.append(num, titleBlock);
 
-      const btn = document.createElement("button");
-      btn.className = "copy";
-      btn.textContent = "Copier";
-      btn.addEventListener("click", () => copyText(command, btn));
+      const body = document.createElement("div");
+      body.className = "step-body";
+      const intro = document.createElement("p");
+      intro.textContent = step.intro;
+      body.appendChild(intro);
 
-      block.append(pre, btn);
-      return block;
-    }
-
-    function renderAccordion() {
-      const root = document.getElementById("accordion");
-      root.innerHTML = "";
-
-      recipes.forEach((recipe, index) => {
-        const item = document.createElement("div");
-        item.className = "accordion";
-        item.dataset.open = index === 0 ? "true" : "false";
-
-        const header = document.createElement("button");
-        header.className = "accordion-header";
-        header.innerHTML = `<h2>${recipe.title}</h2><span class="accordion-icon">+</span>`;
-        header.addEventListener("click", () => {
-          item.dataset.open = item.dataset.open === "true" ? "false" : "true";
-        });
-
-        const body = document.createElement("div");
-        body.className = "accordion-body";
-        const bodyInner = document.createElement("div");
-        bodyInner.className = "accordion-body-inner";
-
-        if (recipe.intro) {
-          const intro = document.createElement("p");
-          intro.textContent = recipe.intro;
-          bodyInner.appendChild(intro);
+      step.cmds.forEach((c) => {
+        const row = document.createElement("div");
+        row.className = "cmd";
+        const code = document.createElement("code");
+        code.textContent = c.cmd;
+        if (c.note) {
+          const note = document.createElement("span");
+          note.className = "note";
+          note.textContent = c.note;
+          code.appendChild(note);
         }
-
-        recipe.steps.forEach((step) => {
-          const stepEl = document.createElement("div");
-          stepEl.className = "step";
-
-          const label = document.createElement("strong");
-          label.textContent = step.label;
-          stepEl.appendChild(label);
-
-          step.cmds.forEach((cmd) => stepEl.appendChild(makeCodeBlock(cmd)));
-
-          if (step.note) {
-            const note = document.createElement("p");
-            note.className = "step-note";
-            note.textContent = step.note;
-            stepEl.appendChild(note);
-          }
-
-          bodyInner.appendChild(stepEl);
-        });
-
-        body.appendChild(bodyInner);
-        item.append(header, body);
-        root.appendChild(item);
+        const btn = document.createElement("button");
+        btn.className = "copy";
+        btn.textContent = "Copier";
+        btn.addEventListener("click", () => copyText(c.cmd, btn));
+        row.append(code, btn);
+        body.appendChild(row);
       });
-    }
 
-    renderAccordion();
+      const why = document.createElement("div");
+      why.className = "why";
+      why.innerHTML = `<strong>Pourquoi :</strong> ${step.why}`;
+      body.appendChild(why);
+
+      section.append(head, body);
+      stepsEl.appendChild(section);
+    });
   </script>
 </body>
 </html>
